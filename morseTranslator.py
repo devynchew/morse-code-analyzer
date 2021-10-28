@@ -70,7 +70,7 @@ def getSpecificInt(prompt): # function to get input value between 1 and 4
             value = int(input(prompt))
         except ValueError:
             print(errorMsg)
-            continue
+            continue # continue skips the current iteration
         if value < 1:
             print(errorMsg)
             continue
@@ -90,7 +90,20 @@ def getSpecificLetter(prompt): # function to get input value of either 'v' or 'h
         except ValueError:
             print(errorMsg)
             continue
-        if value != 'h' and value != 'v':
+        if value != 'h' and value != 'v': # if value is neither 'h' nor 'v'
+            print(errorMsg)
+            continue
+        else:
+            # we got a valid value, exit the loop
+            break
+    return value
+
+def getSpecificText(prompt): # function to get upper case text
+    errorMsg = "\nPlease enter valid text."
+    while True:
+        try:
+            value = str(input(prompt)).upper()
+        except ValueError:
             print(errorMsg)
             continue
         else:
@@ -130,9 +143,9 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
                 printingMode = 'horizontal'
                 print("The print mode has been changed to horizontal")
 
-            input("Please Enter, to con1tinue....")
+            input("Please Enter, to continue....")
         elif choice == 2:
-            text = input("Please type text you want to convert to morse code: ")
+            text = getSpecificText("Please type text you want to convert to morse code: ")
         elif choice == 3:
             break
         elif choice == 4:
