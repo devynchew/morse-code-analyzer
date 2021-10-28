@@ -57,8 +57,56 @@ def decodeMorse(file):
     translated += list(MORSE_CODE_DICT.keys())[list(MORSE_CODE_DICT.values()).index(morsetext)]
     return translated
 
-outputMorse = encodeMorse("eng.txt")
-print(outputMorse)
+# outputMorse = encodeMorse("eng.txt")
+# print(outputMorse)
 
-outputEnglish = decodeMorse("morse.txt")
-print(outputEnglish)
+# outputEnglish = decodeMorse("morse.txt")
+# print(outputEnglish)
+
+def userInterface():
+    userInput4 = False
+    printingMode = 'horizontal'
+    while not userInput4:
+        print(f"*****************************************************************************\n\
+    * ST1507 DSAA: MorseCode Message Analyzer                                   *\n\
+    *___________________________________________________________________________*\n\
+    *                                                                           *\n\
+    *    - Done by: Devyn Chew (2026578)                                        *\n\
+    *    - Class DAAA/2B/04                                                     *\n\
+    *****************************************************************************\n\
+    \n\n\n\
+    Please select your choice ('1','2','3','4'):\n\
+        1. Change Printing Mode\n\
+        2. Convert Morse Code To Text\n\
+        3. Analyze Morse Code Message\n\
+        4. Exit\n")
+        choice = input("Enter choice: ")
+        if choice.isnumeric(): # if user input is a number, convert to integer
+            choice = int(choice)
+
+        if choice == 1:
+            userInputPrint = input(f"Current print mode is {printingMode}\n\n\
+Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
+            if userInputPrint.isalpha(): # user input an alphabet
+                userInputPrint = userInputPrint.lower()
+                if userInputPrint == 'v':
+                    printingMode = 'vertical'
+                    print("The print mode has been changed to vertical")
+                elif userInputPrint == 'h':
+                    printingMode = 'horizontal'
+                    print("The print mode has been changed to horizontal")
+                else:
+                    print("Please enter a valid input.")
+            else:
+                print("Please enter a valid input.")
+            input("Please Enter, to con1tinue....")
+        elif choice == 2:
+            break
+        elif choice == 3:
+            break
+        elif choice == 4:
+            userInput4 = True
+        else:
+            print("Please enter a valid option.")
+
+userInterface()
