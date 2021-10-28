@@ -63,6 +63,43 @@ def decodeMorse(file):
 # outputEnglish = decodeMorse("morse.txt")
 # print(outputEnglish)
 
+def getSpecificInt(prompt): # function to get input value between 1 and 4
+    errorMsg = "Please enter a number between 1 and 4."
+    while True:
+        try:
+            value = int(input(prompt))
+        except ValueError:
+            print(errorMsg)
+            continue
+        if value < 1:
+            print(errorMsg)
+            continue
+        if value > 4:
+            print(errorMsg)
+            continue
+        else:
+            # we got a valid value, exit the loop
+            break
+    return value
+
+def getSpecificLetter(prompt): # function to get input value of either 'v' or 'h'
+    errorMsg = "\nPlease enter either 'h' or 'v'."
+    while True:
+        try:
+            value = input(prompt).lower()
+        except ValueError:
+            print(errorMsg)
+            continue
+        if value != 'h' and value != 'v':
+            print(errorMsg)
+            continue
+        else:
+            # we got a valid value, exit the loop
+            break
+    return value
+    
+
+
 def userInterface():
     userInput4 = False
     printingMode = 'horizontal'
@@ -80,28 +117,22 @@ def userInterface():
         2. Convert Morse Code To Text\n\
         3. Analyze Morse Code Message\n\
         4. Exit\n")
-        choice = input("Enter choice: ")
-        if choice.isnumeric(): # if user input is a number, convert to integer
-            choice = int(choice)
+        choice = getSpecificInt("Enter choice: ")
 
         if choice == 1:
-            userInputPrint = input(f"Current print mode is {printingMode}\n\n\
+            userInputPrint = getSpecificLetter(f"Current print mode is {printingMode}\n\n\
 Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
-            if userInputPrint.isalpha(): # user input an alphabet
-                userInputPrint = userInputPrint.lower()
-                if userInputPrint == 'v':
-                    printingMode = 'vertical'
-                    print("The print mode has been changed to vertical")
-                elif userInputPrint == 'h':
-                    printingMode = 'horizontal'
-                    print("The print mode has been changed to horizontal")
-                else:
-                    print("Please enter a valid input.")
+            
+            if userInputPrint == 'v':
+                printingMode = 'vertical'
+                print("The print mode has been changed to vertical")
             else:
-                print("Please enter a valid input.")
+                printingMode = 'horizontal'
+                print("The print mode has been changed to horizontal")
+
             input("Please Enter, to con1tinue....")
         elif choice == 2:
-            break
+            text = input("Please type text you want to convert to morse code: ")
         elif choice == 3:
             break
         elif choice == 4:
