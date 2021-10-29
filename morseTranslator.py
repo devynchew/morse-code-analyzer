@@ -12,9 +12,7 @@ MORSE_CODE_DICT = { 'A':'.-', 'B':'-...',
                     '7':'--...', '8':'---..', '9':'----.',
                     '0':'-----'}
 
-def encodeMorse(file):
-    f = open(file, "r")
-    text = f.read()
+def encodeMorse(text):
     str = ''
     i = 0
     for letter in text:
@@ -32,9 +30,7 @@ def encodeMorse(file):
     return str
 
 
-def decodeMorse(file):
-    f = open(file, "r")
-    text = f.read()
+def decodeMorse(text):
     morsetext = ''
     translated = ''
     i = 0
@@ -102,8 +98,11 @@ def getSpecificText(prompt): # function to get upper case text
     errorMsg = "\nPlease enter valid text."
     while True:
         try:
-            value = str(input(prompt)).upper()
+            value = (input(prompt)).upper()
         except ValueError:
+            print(errorMsg)
+            continue
+        if not all(x.isalpha() or x.isspace() for x in value):
             print(errorMsg)
             continue
         else:
@@ -145,7 +144,11 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
 
             input("Please Enter, to continue....")
         elif choice == 2:
-            text = getSpecificText("Please type text you want to convert to morse code: ")
+            text = getSpecificText("Please type text you want to convert to morse code: \n")
+            outputMorse = encodeMorse(text)
+            print(outputMorse)
+
+            input("\nPlease Enter, to continue....")
         elif choice == 3:
             break
         elif choice == 4:
