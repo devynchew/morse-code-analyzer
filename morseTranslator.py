@@ -12,6 +12,40 @@ MORSE_CODE_DICT = { 'A':'.-', 'B':'-...',
                     '7':'--...', '8':'---..', '9':'----.',
                     '0':'-----'}
 
+def vertical(morseCode):
+    letter = []
+    finalList = []
+    i = 0
+    for char in morseCode:
+        if char == ',':
+            spacesNeeded = 5 - len(letter)
+            j = 0
+            while j != spacesNeeded:
+                letter.insert(0,' ')
+                j += 1
+            finalList += letter
+            letter = []
+            i += 1
+        elif i == (len(morseCode) - 1):
+            letter += char
+            spacesNeeded = 5 - len(letter)
+            j = 0
+            while j != spacesNeeded:
+                letter.insert(0,' ')
+                j += 1
+            finalList += letter
+            letter = []
+            i += 1
+        else:
+            letter += char
+            i += 1
+
+    print(finalList)
+    for char in finalList:
+        print(char)
+
+
+
 def encodeMorse(text):
     str = ''
     i = 0
@@ -52,6 +86,7 @@ def decodeMorse(text):
         i += 1
     translated += list(MORSE_CODE_DICT.keys())[list(MORSE_CODE_DICT.values()).index(morsetext)]
     return translated
+
 
 # outputMorse = encodeMorse("eng.txt")
 # print(outputMorse)
@@ -102,7 +137,7 @@ def getSpecificText(prompt): # function to get upper case text
         except ValueError:
             print(errorMsg)
             continue
-        if not all(x.isalpha() or x.isspace() for x in value):
+        if not all(x.isalnum() or x.isspace() for x in value):
             print(errorMsg)
             continue
         else:
@@ -126,7 +161,7 @@ def userInterface():
     \n\n\n\
     Please select your choice ('1','2','3','4'):\n\
         1. Change Printing Mode\n\
-        2. Convert Morse Code To Text\n\
+        2. Convert Text to Morse Code\n\
         3. Analyze Morse Code Message\n\
         4. Exit\n")
         choice = getSpecificInt("Enter choice: ")
@@ -146,6 +181,8 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
         elif choice == 2:
             text = getSpecificText("Please type text you want to convert to morse code: \n")
             outputMorse = encodeMorse(text)
+            print(outputMorse)
+            outputMorse = vertical(outputMorse)
             print(outputMorse)
 
             input("\nPlease Enter, to continue....")
