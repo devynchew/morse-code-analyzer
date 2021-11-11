@@ -1,3 +1,5 @@
+import os.path
+
 MORSE_CODE_DICT = { 'A':'.-', 'B':'-...',
                     'C':'-.-.', 'D':'-..', 'E':'.',
                     'F':'..-.', 'G':'--.', 'H':'....',
@@ -41,8 +43,18 @@ def vertical(morseCode):
             i += 1
 
     print(finalList)
-    for char in finalList:
-        print(char)
+    print(len(finalList))
+    list = []
+    biggerList = []
+    for index, char in enumerate(finalList):
+        print(index,char)
+        if index % 5 == 0:
+            if index != 0 or index == (len(finalList) - 1):
+                biggerList.append(list)
+                list = []
+        else:
+            list.append(char)
+    print(biggerList)
 
 
 
@@ -137,7 +149,7 @@ def getSpecificText(prompt): # function to get upper case text
         except ValueError:
             print(errorMsg)
             continue
-        if not all(x.isalnum() or x.isspace() for x in value):
+        if not all(x.isalnum() or x.isspace() for x in value): # only accept alphabets, numbers and spaces
             print(errorMsg)
             continue
         else:
@@ -145,6 +157,37 @@ def getSpecificText(prompt): # function to get upper case text
             break
     return value
     
+def getInputFile(prompt):
+    errorMsg = "\nPlease enter a valid morse txt file."
+    while True:
+        try:
+            value = input(prompt)
+        except:
+            print(errorMsg)
+            continue
+        if not os.path.isfile(value): # check if file exist
+            print(errorMsg)
+            continue
+        else:
+            # we got a valid value, exit the loop
+            break
+    return value
+
+def getOutputFile(prompt):
+    errorMsg = "\nPlease enter a valid output file name."
+    while True:
+        try:
+            value = input(prompt)
+        except:
+            print(errorMsg)
+            continue
+        if not all(x.isalnum() or x.isspace() or x not in('\\','/',':','*','?','"','<','>','|') for x in value): # check if output file name is valid 
+            print(errorMsg)
+            continue
+        else:
+            # we got a valid value, exit the loop
+            break
+    return value
 
 
 def userInterface():
@@ -166,7 +209,7 @@ def userInterface():
         4. Exit\n")
         choice = getSpecificInt("Enter choice: ")
 
-        if choice == 1:
+        if choice == 1: # change printing mode
             userInputPrint = getSpecificLetter(f"Current print mode is {printingMode}\n\n\
 Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
             
@@ -178,15 +221,17 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
                 print("The print mode has been changed to horizontal")
 
             input("Please Enter, to continue....")
-        elif choice == 2:
+        elif choice == 2: # convert text to morse code
             text = getSpecificText("Please type text you want to convert to morse code: \n")
             outputMorse = encodeMorse(text)
             print(outputMorse)
-            outputMorse = vertical(outputMorse)
-            print(outputMorse)
+            # outputMorse = vertical(outputMorse)
+            # print(outputMorse)
 
             input("\nPlease Enter, to continue....")
-        elif choice == 3:
+        elif choice == 3: # Analyze morse code
+            inputFile = getInputFile("Please enter input file: ")
+            outputFile = getOutputFile("Please enter output file: ")
             break
         elif choice == 4:
             userInput4 = True
