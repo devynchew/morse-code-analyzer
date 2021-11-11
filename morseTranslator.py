@@ -187,7 +187,7 @@ def getOutputFile(prompt):
         else:
             # we got a valid value, exit the loop
             break
-    return value
+    return value + '.txt'
 
 
 def userInterface():
@@ -232,7 +232,11 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
         elif choice == 3: # Analyze morse code
             inputFile = getInputFile("Please enter input file: ")
             outputFile = getOutputFile("Please enter output file: ")
-            break
+            text = open(inputFile, "r").read() # read the morse file
+            decodedMorseText = decodeMorse(text)
+            print(f"\n>>>Analysis and sorting started: \n\n*** Decoded Morse Text\n{decodedMorseText}")
+            textList = decodedMorseText.split()
+            print(textList)
         elif choice == 4:
             userInput4 = True
         else:
