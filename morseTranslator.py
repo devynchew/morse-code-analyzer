@@ -246,8 +246,9 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
                     freq[item] = 1
 
             print(f"Freq: {freq}")
-            for key, value in freq.items():
-                print (f"{key}: {value}")
+
+            # for key, value in freq.items():
+            #     print (f"{key}: {value}")
             uniqueFreq = list(freq.keys()) # create a list of unique words
             print(f"Unique freq: {uniqueFreq}")
 
