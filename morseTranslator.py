@@ -1,4 +1,5 @@
 import os.path
+import re
 
 MORSE_CODE_DICT = { 'A':'.-', 'B':'-...',
                     'C':'-.-.', 'D':'-..', 'E':'.',
@@ -231,12 +232,51 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
             input("\nPlease Enter, to continue....")
         elif choice == 3: # Analyze morse code
             inputFile = getInputFile("Please enter input file: ")
-            outputFile = getOutputFile("Please enter output file: ")
+            # outputFile = getOutputFile("Please enter output file: ")
             text = open(inputFile, "r").read() # read the morse file
             decodedMorseText = decodeMorse(text)
             print(f"\n>>>Analysis and sorting started: \n\n*** Decoded Morse Text\n{decodedMorseText}")
-            textList = decodedMorseText.split()
+            
+            # Creating an empty dictionary
+            freq = {}
+            for item in decodedMorseText.split():
+                if (item in freq):
+                    freq[item] += 1
+                else:
+                    freq[item] = 1
+
+            print(f"Freq: {freq}")
+            for key, value in freq.items():
+                print (f"{key}: {value}")
+            uniqueFreq = list(freq.keys()) # create a list of unique words
+            print(f"Unique freq: {uniqueFreq}")
+
+            textList = decodedMorseText.split('\n')
+            for index, item in enumerate(textList):
+                textList[index] = item.split(" ")
+    
             print(textList)
+            mainPosition = [] # list of tuples in a list
+            for uniqueWord in uniqueFreq: # for each unique word, go through the text line by line, record the position of each match and append it to mainPosition
+                position = []
+                for lineNumber,line in enumerate(textList):
+                    for index, word in enumerate(line):
+                        if word == uniqueWord:
+                            positionTuple = (lineNumber,index)
+                            position.append(positionTuple)
+                mainPosition.append(position)
+            print(mainPosition)
+
+                        
+
+            # for lineNumber,line in enumerate(textList):
+            #     occurrences = [m.start() for m in re.finditer('SOS', line)]
+            #     print(occurrences)
+            #     if occurrences:
+            #         for occurrence in occurrences:
+            #             print('Found `SOS` at character %d on line %d' % (occurrence, lineNumber + 1))
+
+
         elif choice == 4:
             userInput4 = True
         else:
