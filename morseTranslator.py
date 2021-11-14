@@ -190,6 +190,14 @@ def getOutputFile(prompt):
             break
     return value + '.txt'
 
+def getStopWords(file):
+    stopwordsFile = open(file, "r")
+    stopwordsList = []
+    for line in stopwordsFile:
+        stripped_line = line.strip()
+        stopwordsList.append(stripped_line.upper())
+    return stopwordsList
+
 
 def userInterface():
     userInput4 = False
@@ -253,13 +261,7 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
             sortedFreqWords = [] # create a list of unique words
             for item in sortedFreq:
                 sortedFreqWords.append(item[0])
-            # print(f"sortedFreqWords: {sortedFreqWords}")
-
-
-            # for key, value in freq.items():
-            #     print (f"{key}: {value}")
-            # uniqueFreq = list(freq.keys()) # create a list of unique words
-            # print(f"Unique freq: {uniqueFreq}")
+            print(f"sortedFreqWords: {sortedFreqWords}")
 
             textList = decodedMorseText.split('\n')
             for index, item in enumerate(textList):
@@ -286,6 +288,47 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
                 print(f"[{sortedFreqWords[index]}] ({len(item)}) {item}")
                 arrLength = len(item)
 
+            stopwordsList = getStopWords('stopwords.txt')
+            essMessageList = [x for x in sortedFreqWords if x not in stopwordsList]
+            print(f"essMessageList: {essMessageList}")
+            print(f"sortedFreq: {sortedFreq}")
+
+            essMessageListSorted = []
+            maxLine = 0
+            maxCol = 0
+            maxFreq = 0
+            for index, item in enumerate(mainPosition):
+                print(index, item, len(item), maxFreq)
+                print(essMessageListSorted)
+                if sortedFreqWords[index] in essMessageList:
+                    print("true")
+                    if len(item) > maxFreq:
+                        essMessageListSorted.insert(0, sortedFreqWords[index])
+                        maxFreq = len(item)
+                        print("true1")
+                    elif len(item) == len(prevItem):
+                        if item[0][0] < prevItem[0][0]:
+                            essMessageListSorted.insert(len(essMessageListSorted)-1, sortedFreqWords[index])
+                            print("true2")
+                        elif item[0][0] == prevItem[0][0]:
+                            if item[0][1] < prevItem[0][1]:
+                                essMessageListSorted.insert(len(essMessageListSorted)-1, sortedFreqWords[index])
+                                print("true3")
+                            else:
+                                essMessageListSorted.insert(prevIndex+1, sortedFreqWords[index])
+                                print("false1")
+                        else:
+                            essMessageListSorted.insert(prevIndex+1, sortedFreqWords[index])
+                            print("false2")
+                    else:
+                        essMessageListSorted.append(sortedFreqWords[index])
+                        print("false3")
+                    prevIndex = essMessageListSorted.index(sortedFreqWords[index])
+                    prevItem = item
+                else:
+                    print("false")
+                
+            print(essMessageListSorted)
 
                         
 
