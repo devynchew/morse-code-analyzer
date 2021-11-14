@@ -245,20 +245,29 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
                 else:
                     freq[item] = 1
 
-            print(f"Freq: {freq}")
+            # print(f"Freq: {freq}")
+
+            sortedFreq = sorted(freq.items(), key=lambda x: (-x[1], len(x[0]), x[0])) # list of tuples of Word:Freq
+            # print(f"sortedFreq: {sortedFreq}")
+            
+            sortedFreqWords = [] # create a list of unique words
+            for item in sortedFreq:
+                sortedFreqWords.append(item[0])
+            # print(f"sortedFreqWords: {sortedFreqWords}")
+
 
             # for key, value in freq.items():
             #     print (f"{key}: {value}")
-            uniqueFreq = list(freq.keys()) # create a list of unique words
-            print(f"Unique freq: {uniqueFreq}")
+            # uniqueFreq = list(freq.keys()) # create a list of unique words
+            # print(f"Unique freq: {uniqueFreq}")
 
             textList = decodedMorseText.split('\n')
             for index, item in enumerate(textList):
                 textList[index] = item.split(" ")
-    
-            print(textList)
+            # print(f"textList: {textList}")
+
             mainPosition = [] # list of tuples in a list
-            for uniqueWord in uniqueFreq: # for each unique word, go through the text line by line, record the position of each match and append it to mainPosition
+            for uniqueWord in sortedFreqWords: # for each unique word, go through the text line by line, record the position of each match and append it to mainPosition
                 position = []
                 for lineNumber,line in enumerate(textList):
                     for index, word in enumerate(line):
@@ -266,7 +275,17 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
                             positionTuple = (lineNumber,index)
                             position.append(positionTuple)
                 mainPosition.append(position)
-            print(mainPosition)
+            # print(f"mainPosition: {mainPosition}")
+
+            arrLength = 0
+            for index, item in enumerate(mainPosition):
+                # print(index, item)
+                if len(item) != arrLength:
+                    print(f"\n*** Morse Words with frequency=> {len(item)}")
+                print(encodeMorse(sortedFreqWords[index]))
+                print(f"[{sortedFreqWords[index]}] ({len(item)}) {item}")
+                arrLength = len(item)
+
 
                         
 
