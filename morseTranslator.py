@@ -1,5 +1,7 @@
 import os.path
 import re
+from SortedList import SortedList
+from Word import Word
 
 MORSE_CODE_DICT = { 'A':'.-', 'B':'-...',
                     'C':'-.-.', 'D':'-..', 'E':'.',
@@ -56,7 +58,6 @@ def vertical(morseCode):
         else:
             list.append(char)
     print(biggerList)
-
 
 
 def encodeMorse(text):
@@ -198,6 +199,18 @@ def getStopWords(file):
         stopwordsList.append(stripped_line.upper())
     return stopwordsList
 
+def writeToFile(file,content):
+    # Open the file in append & read mode ('a+')
+    with open(file, "a+") as file_object:
+        # Move read cursor to the start of file.
+        file_object.seek(0)
+        # If file is not empty then append '\n'
+        data = file_object.read(100)
+        if len(data) > 0 :
+            file_object.write("\n")
+        # Append text at the end of file
+        file_object.write(content)
+
 
 def userInterface():
     userInput4 = False
@@ -243,6 +256,7 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
             # outputFile = getOutputFile("Please enter output file: ")
             text = open(inputFile, "r").read() # read the morse file
             decodedMorseText = decodeMorse(text)
+
             print(f"\n>>>Analysis and sorting started: \n\n*** Decoded Morse Text\n{decodedMorseText}")
             
             # Creating an empty dictionary
@@ -261,7 +275,7 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
             sortedFreqWords = [] # create a list of unique words
             for item in sortedFreq:
                 sortedFreqWords.append(item[0])
-            print(f"sortedFreqWords: {sortedFreqWords}")
+            
 
             textList = decodedMorseText.split('\n')
             for index, item in enumerate(textList):
@@ -287,58 +301,34 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
                 print(encodeMorse(sortedFreqWords[index]))
                 print(f"[{sortedFreqWords[index]}] ({len(item)}) {item}")
                 arrLength = len(item)
+            
 
-            stopwordsList = getStopWords('stopwords.txt')
-            essMessageList = [x for x in sortedFreqWords if x not in stopwordsList]
-            print(f"essMessageList: {essMessageList}")
-            print(f"sortedFreq: {sortedFreq}")
-
+            # print(f"sortedFreqWords: {sortedFreqWords}")
             essMessageListSorted = []
-            maxLine = 0
-            maxCol = 0
-            maxFreq = 0
             for index, item in enumerate(mainPosition):
-                print(index, item, len(item), maxFreq)
-                print(essMessageListSorted)
-                if sortedFreqWords[index] in essMessageList:
-                    print("true")
-                    if len(item) > maxFreq:
-                        essMessageListSorted.insert(0, sortedFreqWords[index])
-                        maxFreq = len(item)
-                        print("true1")
-                    elif len(item) == len(prevItem):
-                        if item[0][0] < prevItem[0][0]:
-                            essMessageListSorted.insert(len(essMessageListSorted)-1, sortedFreqWords[index])
-                            print("true2")
-                        elif item[0][0] == prevItem[0][0]:
-                            if item[0][1] < prevItem[0][1]:
-                                essMessageListSorted.insert(len(essMessageListSorted)-1, sortedFreqWords[index])
-                                print("true3")
-                            else:
-                                essMessageListSorted.insert(prevIndex+1, sortedFreqWords[index])
-                                print("false1")
-                        else:
-                            essMessageListSorted.insert(prevIndex+1, sortedFreqWords[index])
-                            print("false2")
-                    else:
-                        essMessageListSorted.append(sortedFreqWords[index])
-                        print("false3")
-                    prevIndex = essMessageListSorted.index(sortedFreqWords[index])
-                    prevItem = item
-                else:
-                    print("false")
-                
-            print(essMessageListSorted)
+                newList = []
+                newList.extend((sortedFreqWords[index], len(item), item[0]))
+                essMessageListSorted.append(newList)
+                newList = []
+            # print(essMessageListSorted)
+        
+            
+    
+            stopwordsList = getStopWords('stopwords.txt')
+            # print(stopwordsList)
+            essMessageList = [x for x in essMessageListSorted if x[0] not in stopwordsList]
+            # print(f"essMessageList: {essMessageList}")
+            # print(f"sortedFreq: {sortedFreq}")
 
-                        
+            l = SortedList()
+            # print('Before sorting')
+            # print(essMessageList)
 
-            # for lineNumber,line in enumerate(textList):
-            #     occurrences = [m.start() for m in re.finditer('SOS', line)]
-            #     print(occurrences)
-            #     if occurrences:
-            #         for occurrence in occurrences:
-            #             print('Found `SOS` at character %d on line %d' % (occurrence, lineNumber + 1))
+            for word in essMessageList:
+                l.insert(Word(word[0], word[1], word[2][0], word[2][1]))
+                # print(l)
 
+            print(f'\nEssential Message\n{l}')
 
         elif choice == 4:
             userInput4 = True
