@@ -253,9 +253,11 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
             input("\nPlease Enter, to continue....")
         elif choice == 3: # Analyze morse code
             inputFile = getInputFile("Please enter input file: ")
-            # outputFile = getOutputFile("Please enter output file: ")
+            outputFile = getOutputFile("Please enter output file: ")
             text = open(inputFile, "r").read() # read the morse file
             decodedMorseText = decodeMorse(text)
+
+            writeToFile(outputFile,f"*** Decoded Morse Text\n{decodedMorseText}")
 
             print(f"\n>>>Analysis and sorting started: \n\n*** Decoded Morse Text\n{decodedMorseText}")
             
@@ -267,20 +269,15 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
                 else:
                     freq[item] = 1
 
-            # print(f"Freq: {freq}")
-
             sortedFreq = sorted(freq.items(), key=lambda x: (-x[1], len(x[0]), x[0])) # list of tuples of Word:Freq
-            # print(f"sortedFreq: {sortedFreq}")
             
             sortedFreqWords = [] # create a list of unique words
             for item in sortedFreq:
                 sortedFreqWords.append(item[0])
-            
 
             textList = decodedMorseText.split('\n')
             for index, item in enumerate(textList):
                 textList[index] = item.split(" ")
-            # print(f"textList: {textList}")
 
             mainPosition = [] # list of tuples in a list
             for uniqueWord in sortedFreqWords: # for each unique word, go through the text line by line, record the position of each match and append it to mainPosition
@@ -291,44 +288,36 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
                             positionTuple = (lineNumber,index)
                             position.append(positionTuple)
                 mainPosition.append(position)
-            # print(f"mainPosition: {mainPosition}")
 
             arrLength = 0
             for index, item in enumerate(mainPosition):
                 # print(index, item)
                 if len(item) != arrLength:
                     print(f"\n*** Morse Words with frequency=> {len(item)}")
+                    writeToFile(outputFile, f"\n*** Morse Words with frequency=> {len(item)}")
                 print(encodeMorse(sortedFreqWords[index]))
+                writeToFile(outputFile, f"{encodeMorse(sortedFreqWords[index])}")
                 print(f"[{sortedFreqWords[index]}] ({len(item)}) {item}")
-                arrLength = len(item)
-            
+                writeToFile(outputFile, f"[{sortedFreqWords[index]}] ({len(item)}) {item}")
 
-            # print(f"sortedFreqWords: {sortedFreqWords}")
+                arrLength = len(item)
+
             essMessageListSorted = []
             for index, item in enumerate(mainPosition):
                 newList = []
                 newList.extend((sortedFreqWords[index], len(item), item[0]))
                 essMessageListSorted.append(newList)
-                newList = []
-            # print(essMessageListSorted)
-        
-            
-    
+
             stopwordsList = getStopWords('stopwords.txt')
-            # print(stopwordsList)
             essMessageList = [x for x in essMessageListSorted if x[0] not in stopwordsList]
-            # print(f"essMessageList: {essMessageList}")
-            # print(f"sortedFreq: {sortedFreq}")
 
             l = SortedList()
-            # print('Before sorting')
-            # print(essMessageList)
 
             for word in essMessageList:
                 l.insert(Word(word[0], word[1], word[2][0], word[2][1]))
-                # print(l)
 
             print(f'\nEssential Message\n{l}')
+            writeToFile(outputFile, f"\nEssential Message\n{l}")
 
         elif choice == 4:
             userInput4 = True
