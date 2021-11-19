@@ -1,5 +1,5 @@
 import os.path
-import re
+import numpy as np
 from SortedList import SortedList
 from Word import Word
 
@@ -18,46 +18,38 @@ MORSE_CODE_DICT = { 'A':'.-', 'B':'-...',
                     '0':'-----'}
 
 def vertical(morseCode):
-    letter = []
-    finalList = []
-    i = 0
-    for char in morseCode:
-        if char == ',':
-            spacesNeeded = 5 - len(letter)
-            j = 0
-            while j != spacesNeeded:
-                letter.insert(0,' ')
-                j += 1
-            finalList += letter
-            letter = []
-            i += 1
-        elif i == (len(morseCode) - 1):
-            letter += char
-            spacesNeeded = 5 - len(letter)
-            j = 0
-            while j != spacesNeeded:
-                letter.insert(0,' ')
-                j += 1
-            finalList += letter
-            letter = []
-            i += 1
-        else:
-            letter += char
-            i += 1
+    outputArr = morseCode.split(',') # split the morseCode string into a list where each item represents one letter/space
 
-    print(finalList)
-    print(len(finalList))
-    list = []
-    biggerList = []
-    for index, char in enumerate(finalList):
-        print(index,char)
-        if index % 5 == 0:
-            if index != 0 or index == (len(finalList) - 1):
-                biggerList.append(list)
-                list = []
-        else:
-            list.append(char)
-    print(biggerList)
+    # finding the max length of letter in the morse code to determine how many empty spaces to add in front of each letter
+    max_len = -1
+    for letter in outputArr:
+        if len(letter) > max_len:
+            max_len = len(letter)
+            longestStr = letter
+
+    # adding empty spaces in front of each letter until its length equals to max length of letter
+    tempArr = []
+    for letter in outputArr:
+        emptySpaces = len(longestStr) - len(letter)
+        letter = letter[:0] + ' ' * emptySpaces + letter[0:]
+        tempArr.append(letter)
+
+    # breaking down the list further until each morse character is an individual item in a list
+    newArr = []
+    for letter in tempArr:
+        for char in letter:
+            newArr.append(char)
+
+    # converting the list into a numpy array, reshaping it and then transposing to get a shape identical to the one shown for vertical printing
+    newNpArr = np.array(newArr).reshape(-1,len(longestStr))
+    transposedNpArr = np.transpose(newNpArr)
+
+    # printing morse code vertically
+    for arr in transposedNpArr:
+        lineStr = ''
+        for char in arr:
+            lineStr += char
+        print(lineStr)
 
 
 def encodeMorse(text):
@@ -211,7 +203,6 @@ def writeToFile(file,content):
         # Append text at the end of file
         file_object.write(content)
 
-
 def userInterface():
     userInput4 = False
     printingMode = 'horizontal'
@@ -246,9 +237,10 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
         elif choice == 2: # convert text to morse code
             text = getSpecificText("Please type text you want to convert to morse code: \n")
             outputMorse = encodeMorse(text)
-            print(outputMorse)
-            # outputMorse = vertical(outputMorse)
-            # print(outputMorse)
+            if printingMode == 'horizontal':
+                print(outputMorse)
+            else:
+                vertical(outputMorse)
 
             input("\nPlease Enter, to continue....")
         elif choice == 3: # Analyze morse code
