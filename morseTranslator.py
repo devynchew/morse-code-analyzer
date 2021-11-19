@@ -1,7 +1,11 @@
-import os.path
 import numpy as np
 from SortedList import SortedList
 from Word import Word
+from getInputFile import getInputFile
+from getOutputFile import getOutputFile
+from getSpecificInt import getSpecificInt
+from getSpecificLetter import getSpecificLetter
+from getSpecificText import getSpecificText
 
 MORSE_CODE_DICT = { 'A':'.-', 'B':'-...',
                     'C':'-.-.', 'D':'-..', 'E':'.',
@@ -17,6 +21,7 @@ MORSE_CODE_DICT = { 'A':'.-', 'B':'-...',
                     '7':'--...', '8':'---..', '9':'----.',
                     '0':'-----'}
 
+# function to print morse code vertically
 def vertical(morseCode):
     outputArr = morseCode.split(',') # split the morseCode string into a list where each item represents one letter/space
 
@@ -51,7 +56,7 @@ def vertical(morseCode):
             lineStr += char
         print(lineStr)
 
-
+# function to convert text to morse code
 def encodeMorse(text):
     str = ''
     i = 0
@@ -69,7 +74,7 @@ def encodeMorse(text):
         i += 1
     return str
 
-
+# function to convert morse code to text
 def decodeMorse(text):
     morsetext = ''
     translated = ''
@@ -92,96 +97,6 @@ def decodeMorse(text):
         i += 1
     translated += list(MORSE_CODE_DICT.keys())[list(MORSE_CODE_DICT.values()).index(morsetext)]
     return translated
-
-
-# outputMorse = encodeMorse("eng.txt")
-# print(outputMorse)
-
-# outputEnglish = decodeMorse("morse.txt")
-# print(outputEnglish)
-
-def getSpecificInt(prompt): # function to get input value between 1 and 4
-    errorMsg = "Please enter a number between 1 and 4."
-    while True:
-        try:
-            value = int(input(prompt))
-        except ValueError:
-            print(errorMsg)
-            continue # continue skips the current iteration
-        if value < 1:
-            print(errorMsg)
-            continue
-        if value > 4:
-            print(errorMsg)
-            continue
-        else:
-            # we got a valid value, exit the loop
-            break
-    return value
-
-def getSpecificLetter(prompt): # function to get input value of either 'v' or 'h'
-    errorMsg = "\nPlease enter either 'h' or 'v'."
-    while True:
-        try:
-            value = input(prompt).lower()
-        except ValueError:
-            print(errorMsg)
-            continue
-        if value != 'h' and value != 'v': # if value is neither 'h' nor 'v'
-            print(errorMsg)
-            continue
-        else:
-            # we got a valid value, exit the loop
-            break
-    return value
-
-def getSpecificText(prompt): # function to get upper case text
-    errorMsg = "\nPlease enter valid text."
-    while True:
-        try:
-            value = (input(prompt)).upper()
-        except ValueError:
-            print(errorMsg)
-            continue
-        if not all(x.isalnum() or x.isspace() for x in value): # only accept alphabets, numbers and spaces
-            print(errorMsg)
-            continue
-        else:
-            # we got a valid value, exit the loop
-            break
-    return value
-    
-def getInputFile(prompt):
-    errorMsg = "\nPlease enter a valid morse txt file."
-    while True:
-        try:
-            value = input(prompt)
-        except:
-            print(errorMsg)
-            continue
-        if not os.path.isfile(value): # check if file exist
-            print(errorMsg)
-            continue
-        else:
-            # we got a valid value, exit the loop
-            break
-    return value
-
-def getOutputFile(prompt):
-    errorMsg = "\nPlease enter a valid output file name."
-    while True:
-        try:
-            value = input(prompt)
-        except:
-            print(errorMsg)
-            continue
-        if not all(x.isalnum() or x.isspace() or x not in('\\','/',':','*','?','"','<','>','|') for x in value): # check if output file name is valid 
-            print(errorMsg)
-            continue
-        else:
-            # we got a valid value, exit the loop
-            break
-    return value + '.txt'
 
 def getStopWords(file):
     stopwordsFile = open(file, "r")
@@ -207,7 +122,7 @@ def userInterface():
     userInput4 = False
     printingMode = 'horizontal'
     while not userInput4:
-        print(f"*****************************************************************************\n\
+        print(f"    *****************************************************************************\n\
     * ST1507 DSAA: MorseCode Message Analyzer                                   *\n\
     *___________________________________________________________________________*\n\
     *                                                                           *\n\
@@ -220,40 +135,49 @@ def userInterface():
         2. Convert Text to Morse Code\n\
         3. Analyze Morse Code Message\n\
         4. Exit\n")
-        choice = getSpecificInt("Enter choice: ")
+        # get user choice
+        intClass = getSpecificInt("Enter choice: ", "Please enter a number between 1 and 4.")
+        choice = intClass.getInput()
 
         if choice == 1: # change printing mode
-            userInputPrint = getSpecificLetter(f"Current print mode is {printingMode}\n\n\
-Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
+            letterClass =  getSpecificLetter(f"Current print mode is {printingMode}\n\n\
+Enter 'h' for horizontal or 'v' for vertical, then press enter: ", "\nPlease enter either 'h' or 'v'.")
+            userInputPrint = letterClass.getInput()
             
             if userInputPrint == 'v':
                 printingMode = 'vertical'
-                print("The print mode has been changed to vertical")
+                print(f"The print mode has been changed to {printingMode}")
             else:
                 printingMode = 'horizontal'
-                print("The print mode has been changed to horizontal")
+                print(f"The print mode has been changed to {printingMode}")
 
             input("Please Enter, to continue....")
         elif choice == 2: # convert text to morse code
-            text = getSpecificText("Please type text you want to convert to morse code: \n")
-            outputMorse = encodeMorse(text)
+            textClass = getSpecificText("Please type text you want to convert to morse code: \n", "\nPlease enter valid text.")
+            text = textClass.getInput()
+
+            outputMorse = encodeMorse(text) # encode text to morse code
             if printingMode == 'horizontal':
-                print(outputMorse)
+                print(outputMorse) # morse code prints horizontally by default
             else:
                 vertical(outputMorse)
 
             input("\nPlease Enter, to continue....")
-        elif choice == 3: # Analyze morse code
-            inputFile = getInputFile("Please enter input file: ")
-            outputFile = getOutputFile("Please enter output file: ")
+        elif choice == 3: # Analyze morse code and generate report
+            inputFileClass = getInputFile("Please enter input file: ", "\nPlease enter a valid morse txt file.") # get input file
+            inputFile = inputFileClass.getInput()
+
+            outputFileClass = getOutputFile("Please enter output file: ", "\nPlease enter a valid output file name.") # get output file
+            outputFile = outputFileClass.getInput()
+
             text = open(inputFile, "r").read() # read the morse file
-            decodedMorseText = decodeMorse(text)
+            decodedMorseText = decodeMorse(text) # convert morse code to text
 
             writeToFile(outputFile,f"*** Decoded Morse Text\n{decodedMorseText}")
 
             print(f"\n>>>Analysis and sorting started: \n\n*** Decoded Morse Text\n{decodedMorseText}")
-            
-            # Creating an empty dictionary
+            # Start making the report
+            # Create a dictionary of unique words as keys and frequency as value
             freq = {}
             for item in decodedMorseText.split():
                 if (item in freq):
@@ -261,7 +185,8 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
                 else:
                     freq[item] = 1
 
-            sortedFreq = sorted(freq.items(), key=lambda x: (-x[1], len(x[0]), x[0])) # list of tuples of Word:Freq
+            sortedFreq = sorted(freq.items(), key=lambda x: (-x[1], len(x[0]), x[0])) # create a list of tuples of (Word:Freq)
+            print(sortedFreq)
             
             sortedFreqWords = [] # create a list of unique words
             for item in sortedFreq:
@@ -300,9 +225,12 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
                 newList.extend((sortedFreqWords[index], len(item), item[0]))
                 essMessageListSorted.append(newList)
 
+            # get a list of stopwords
             stopwordsList = getStopWords('stopwords.txt')
+            # remove all stopwords
             essMessageList = [x for x in essMessageListSorted if x[0] not in stopwordsList]
 
+            # sort essential message
             l = SortedList() # class to sort essential message
 
             for word in essMessageList:
@@ -311,9 +239,9 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
             print(f'\nEssential Message\n{l}')
             writeToFile(outputFile, f"\nEssential Message\n{l}")
 
-        elif choice == 4:
+        elif choice == 4: # Exit the program
             userInput4 = True
-        else:
+        else: 
             print("Please enter a valid option.")
 
-userInterface()
+userInterface() # run the main program
