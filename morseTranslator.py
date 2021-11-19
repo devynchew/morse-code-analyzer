@@ -311,7 +311,7 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ")
             stopwordsList = getStopWords('stopwords.txt')
             essMessageList = [x for x in essMessageListSorted if x[0] not in stopwordsList]
 
-            l = SortedList()
+            l = SortedList() # class to sort essential message
 
             for word in essMessageList:
                 l.insert(Word(word[0], word[1], word[2][0], word[2][1]))

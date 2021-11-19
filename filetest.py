@@ -1,10 +1,23 @@
-# Open the file in append & read mode ('a+')
-with open("cat.txt", "a+") as file_object:
-    # Move read cursor to the start of file.
-    file_object.seek(0)
-    # If file is not empty then append '\n'
-    data = file_object.read(100)
-    if len(data) > 0 :
-        file_object.write("\n")
-    # Append text at the end of file
-    file_object.write("hello hi")
+import numpy as np
+
+outputMorse = '...,---,..., ,.--,., ,-.,.,.,-.., ,....,.,.-..,.--.'
+outputArr = outputMorse.split(',')
+
+tempArr = []
+for letter in outputArr:
+    emptySpaces = 5 - len(letter)
+    letter = letter[:0] + ' ' * emptySpaces + letter[0:]
+    tempArr.append(letter)
+
+
+newArr = []
+for letter in tempArr:
+    for char in letter:
+        newArr.append(char)
+
+newNpArr = np.array(newArr).reshape(-1,5)
+print(newNpArr)
+transposedNpArr = np.transpose(newNpArr)
+print(transposedNpArr)
+# for arr in newNpArr:
+#     for char in arr:
