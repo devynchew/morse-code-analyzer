@@ -20,12 +20,12 @@ class Word(Node):
         if self.freq > otherNode.freq: # highest freq goes first
             return True
         elif self.freq == otherNode.freq: # same freq
-            if self.x < otherNode.x:
+            if self.x < otherNode.x: # lower line number goes first
                 return True
             elif self.x > otherNode.x:
                 return False
             else:
-                return self.y < otherNode.y
+                return self.y < otherNode.y 
 
     def __str__(self):
         s= f'{self.word}'

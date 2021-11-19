@@ -52,15 +52,3 @@ class SortedList:
                 output += (' ' + node.__str__())
             node= node.nextNode
         return output
-
-# l = SortedList()
-
-# print('Before sorting')
-# print(essMessageList)
-
-# for word in essMessageList:
-#     l.insert(Word(word[0], word[1], word[2][0], word[2][1]))
-#     print(l)
-
-# print('\nAfter sorting')
-# print(l)

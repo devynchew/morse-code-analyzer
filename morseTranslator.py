@@ -186,17 +186,18 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ", "\nPlease ent
                     freq[item] = 1
 
             sortedFreq = sorted(freq.items(), key=lambda x: (-x[1], len(x[0]), x[0])) # create a list of tuples of (Word:Freq)
-            print(sortedFreq)
             
             sortedFreqWords = [] # create a list of unique words
             for item in sortedFreq:
                 sortedFreqWords.append(item[0])
 
+            # create a list where each item represents a new line of decoded morse text
             textList = decodedMorseText.split('\n')
             for index, item in enumerate(textList):
                 textList[index] = item.split(" ")
 
-            mainPosition = [] # list of tuples in a list
+            # list of tuples in a list where each list represents the positions of each unique word in decoded morse text
+            mainPosition = [] 
             for uniqueWord in sortedFreqWords: # for each unique word, go through the text line by line, record the position of each match and append it to mainPosition
                 position = []
                 for lineNumber,line in enumerate(textList):
@@ -206,9 +207,9 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ", "\nPlease ent
                             position.append(positionTuple)
                 mainPosition.append(position)
 
-            arrLength = 0
+            # printing out the middle bulk of the report
+            arrLength = 0 # counter that handles when a new frequency gets printed
             for index, item in enumerate(mainPosition):
-                # print(index, item)
                 if len(item) != arrLength:
                     print(f"\n*** Morse Words with frequency=> {len(item)}")
                     writeToFile(outputFile, f"\n*** Morse Words with frequency=> {len(item)}")
@@ -219,20 +220,23 @@ Enter 'h' for horizontal or 'v' for vertical, then press enter: ", "\nPlease ent
 
                 arrLength = len(item)
 
+            # prepare a list of essential words for sorting
             essMessageListSorted = []
             for index, item in enumerate(mainPosition):
                 newList = []
                 newList.extend((sortedFreqWords[index], len(item), item[0]))
                 essMessageListSorted.append(newList)
+            print(essMessageListSorted)
 
             # get a list of stopwords
             stopwordsList = getStopWords('stopwords.txt')
-            # remove all stopwords
+            # remove all stopwords from essential word list
             essMessageList = [x for x in essMessageListSorted if x[0] not in stopwordsList]
 
-            # sort essential message
+            # sort essential message with our sorted list class
             l = SortedList() # class to sort essential message
-
+            
+            # inserting the word, frequency and position of the word for sorting
             for word in essMessageList:
                 l.insert(Word(word[0], word[1], word[2][0], word[2][1]))
 
